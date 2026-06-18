@@ -184,8 +184,8 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
     });
   }
 
-  Future<void> _openSettings() {
-    return Navigator.of(context).push(
+  Future<void> _openSettings() async {
+    final changed = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => SettingsScreen(
           settings: widget.settings,
@@ -193,9 +193,13 @@ class _NotesHomeScreenState extends State<NotesHomeScreen> {
           onStartupPasscodeEnabledChanged:
               widget.onStartupPasscodeEnabledChanged,
           crypto: widget.container.crypto,
+          repository: widget.container.notes,
         ),
       ),
     );
+    if (changed == true && mounted) {
+      _refresh();
+    }
   }
 
   Future<void> _showLanguageMenu() {

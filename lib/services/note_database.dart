@@ -114,6 +114,11 @@ class NoteDatabase {
     await db.delete('notes', where: 'id = ?', whereArgs: [id]);
   }
 
+  Future<void> deleteAllNotes() async {
+    final db = await _open();
+    await db.delete('notes');
+  }
+
   Future<Database> _open() async {
     final existing = _database;
     if (existing != null) {

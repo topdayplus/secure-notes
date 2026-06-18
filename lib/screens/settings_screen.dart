@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/app_settings_service.dart';
 import '../services/crypto_service.dart';
+import '../services/note_repository.dart';
 import '../widgets/app_scope.dart';
 import 'lock_screen.dart';
 
@@ -12,12 +13,14 @@ class SettingsScreen extends StatelessWidget {
     required this.onAutoLockDelayChanged,
     required this.onStartupPasscodeEnabledChanged,
     required this.crypto,
+    required this.repository,
   });
 
   final AppSettings settings;
   final Future<void> Function(int seconds) onAutoLockDelayChanged;
   final Future<void> Function(bool enabled) onStartupPasscodeEnabledChanged;
   final CryptoService crypto;
+  final NoteRepository repository;
 
   static const _autoLockOptions = <int>[0, 15, 30, 60, 300, 900, -1];
 
@@ -67,6 +70,25 @@ class SettingsScreen extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 24),
+          Text(
+            strings.dangerZone,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: ListTile(
+              leading: Icon(
+                Icons.delete_forever_outlined,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              title: Text(strings.clearAllNotes),
+              subtitle: Text(strings.clearAllNotesDescription),
+              onTap: () => _clearAllNotes(context),
+            ),
+          ),
         ],
       ),
     );
@@ -111,7 +133,71 @@ class SettingsScreen extends StatelessWidget {
     }
   }
 
-  Future<bool?> _verifyCurrentPasscode(BuildContext context) {
+  Future<void> _clearAllNotes(BuildContext context) async {
+    final strings = AppScope.of(context).strings;
+
+    final confirmed = await _confirmClearAllNotes(context);
+    if (confirmed != true) {
+      return;
+    }
+    if (!context.mounted) {
+      return;
+    }
+
+    if (settings.startupPasscodeEnabled != false) {
+      final verified = await _verifyCurrentPasscode(
+        context,
+        title: strings.clearAllNotesPasscodeTitle,
+        description: strings.clearAllNotesPasscodeDescription,
+      );
+      if (verified != true) {
+        return;
+      }
+    }
+
+    await repository.deleteAllNotes();
+    if (!context.mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(strings.allNotesCleared)));
+    Navigator.of(context).pop(true);
+  }
+
+  Future<bool?> _confirmClearAllNotes(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        final strings = AppScope.of(dialogContext).strings;
+        final colorScheme = Theme.of(dialogContext).colorScheme;
+        return AlertDialog(
+          title: Text(strings.clearAllNotesConfirmTitle),
+          content: Text(strings.clearAllNotesConfirmBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(strings.cancel),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: colorScheme.error,
+                foregroundColor: colorScheme.onError,
+              ),
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(strings.delete),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<bool?> _verifyCurrentPasscode(
+    BuildContext context, {
+    String? title,
+    String? description,
+  }) {
     final controller = TextEditingController();
     return showDialog<bool>(
       context: context,
@@ -122,11 +208,13 @@ class SettingsScreen extends StatelessWidget {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text(strings.disableStartupPasscode),
+              title: Text(title ?? strings.disableStartupPasscode),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(strings.disableStartupPasscodeDescription),
+                  Text(
+                    description ?? strings.disableStartupPasscodeDescription,
+                  ),
                   const SizedBox(height: 12),
                   TextField(
                     controller: controller,

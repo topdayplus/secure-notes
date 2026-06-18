@@ -92,6 +92,10 @@ class NoteRepository {
     return _database.deleteNote(id);
   }
 
+  Future<void> deleteAllNotes() {
+    return _database.deleteAllNotes();
+  }
+
   Future<void> importNotes(
     List<Note> notes, {
     void Function(int imported, int total)? onProgress,

@@ -199,6 +199,57 @@ class AppStrings {
       'Enter the current passcode to confirm. After disabling it, the app opens directly to the notes home screen.',
   };
 
+  String get dangerZone => switch (appLanguage) {
+    AppLanguage.zhHans => '危险操作',
+    AppLanguage.zhHant => '危險操作',
+    AppLanguage.en => 'Danger zone',
+  };
+
+  String get clearAllNotes => switch (appLanguage) {
+    AppLanguage.zhHans => '清空所有便签',
+    AppLanguage.zhHant => '清空所有便條',
+    AppLanguage.en => 'Clear all notes',
+  };
+
+  String get clearAllNotesDescription => switch (appLanguage) {
+    AppLanguage.zhHans => '删除当前手机上的所有便签，不删除启动密码、设置或已导出的迁移文件。',
+    AppLanguage.zhHant => '刪除目前手機上的所有便條，不刪除啟動密碼、設定或已匯出的遷移檔案。',
+    AppLanguage.en =>
+      'Delete all notes on this device. Startup passcode, settings, and exported migration files are not removed.',
+  };
+
+  String get clearAllNotesConfirmTitle => switch (appLanguage) {
+    AppLanguage.zhHans => '清空所有便签？',
+    AppLanguage.zhHant => '清空所有便條？',
+    AppLanguage.en => 'Clear all notes?',
+  };
+
+  String get clearAllNotesConfirmBody => switch (appLanguage) {
+    AppLanguage.zhHans => '此操作会删除当前手机上的所有便签，且不可恢复。已导出的 .snote 文件不会被删除。',
+    AppLanguage.zhHant => '此操作會刪除目前手機上的所有便條，且無法復原。已匯出的 .snote 檔案不會被刪除。',
+    AppLanguage.en =>
+      'This will delete all notes on this device and cannot be undone. Exported .snote files are not removed.',
+  };
+
+  String get clearAllNotesPasscodeTitle => switch (appLanguage) {
+    AppLanguage.zhHans => '确认启动密码',
+    AppLanguage.zhHant => '確認啟動密碼',
+    AppLanguage.en => 'Confirm startup passcode',
+  };
+
+  String get clearAllNotesPasscodeDescription => switch (appLanguage) {
+    AppLanguage.zhHans => '请输入当前启动密码后再清空所有便签。',
+    AppLanguage.zhHant => '請輸入目前啟動密碼後再清空所有便條。',
+    AppLanguage.en =>
+      'Enter the current startup passcode before clearing all notes.',
+  };
+
+  String get allNotesCleared => switch (appLanguage) {
+    AppLanguage.zhHans => '已清空所有便签。',
+    AppLanguage.zhHant => '已清空所有便條。',
+    AppLanguage.en => 'All notes cleared.',
+  };
+
   String get moreActions => switch (appLanguage) {
     AppLanguage.zhHans => '更多操作',
     AppLanguage.zhHant => '更多操作',

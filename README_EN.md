@@ -1,18 +1,17 @@
 # Secure Notes
 
-Secure Notes is a local-first encrypted notes app focused on one problem: sensitive notes are encrypted and stored only on the phone. When moving to a new phone, data can be migrated over a local network while both phones are offline from the internet, without saving the fetched migration package as a file, or exported as an encrypted file for manual transfer.
+Secure Notes is a security-focused notes app with screenshot protection, background protection, and offline LAN migration without saving transferred data as a local file.
+
+## Why This Project Exists
+
+I recently switched between Android phones from different brands. Notes stored in the built-in notes app did not migrate cleanly through phone cloning, which was frustrating. I found some open-source encrypted notes apps that support encrypted export and import, but I wanted to see whether migration could avoid manual export entirely, and even work without internet access: two phones can form a local Wi-Fi or hotspot network and transfer data directly without leaving a migration file behind.
 
 ## Core Capabilities
 
-- Local encrypted storage: note content is encrypted before being written to the local database.
-- Startup passcode and auto-lock: protects app entry and background return.
-- Offline LAN migration: works without cloud services or internet access.
-- QR pairing: the old phone shows a migration QR code, and the new phone scans it to get the LAN address.
-- Migration confirmation: both phones compare the confirmation code and note count before transfer.
-- Encrypted migration package: LAN transfer sends encrypted data, not plaintext notes.
+- Offline LAN migration: no cloud service or internet access required.
 - `.snote` file fallback: export an encrypted file when LAN transfer is unavailable.
-- Import progress: large imports show decryption and write progress.
-- Android privacy protection: blocks screenshots and recent-task preview leaks.
+- Privacy protection: blocks screenshots and recent-task preview leaks.
+- Local data cleanup: clear all notes on the current phone from settings.
 
 ## How Offline Migration Works
 
@@ -21,7 +20,7 @@ Secure Notes is a local-first encrypted notes app focused on one problem: sensit
    - Or one phone can create a hotspot and the other phone can join it.
    - The local network does not need internet access.
 2. Start LAN sending on the old phone to generate a migration address and QR code.
-3. Scan the QR code on the new phone to fetch the old phone's LAN migration address.
+3. Scan the QR code on the new phone to get the old phone's LAN migration address.
 4. Compare the confirmation code and note count on both phones.
 5. Allow sending on the old phone, then enter the migration passphrase on the new phone to import.
 
@@ -41,8 +40,6 @@ Notes are not uploaded to the cloud. The QR code contains only the LAN address, 
 - Migration packages are encrypted with a migration passphrase.
 - LAN migration transfers only encrypted migration packages.
 - Camera permission is used only for scanning LAN migration QR codes.
-
-See [PRIVACY_EN.md](PRIVACY_EN.md) for the short privacy statement.
 
 ## Tech Stack
 

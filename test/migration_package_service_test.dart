@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:secure_notes_app/models/note.dart';
@@ -90,18 +89,29 @@ void main() {
     );
   });
 
-  test('imports generated single-note migration fixture', () async {
+  test('imports generated single-note migration package', () async {
     final service = MigrationPackageService();
-    final file = File(
-      'build/migration-test/secure-notes-dart-seed-1-20260613-141851.snote',
+    final package = await service.exportNotes(
+      notes: [
+        Note(
+          id: 'note-single',
+          type: NoteType.plain,
+          title: 'Single migration test',
+          body: 'Single note body',
+          fields: const {},
+          createdAt: DateTime.fromMillisecondsSinceEpoch(1000),
+          updatedAt: DateTime.fromMillisecondsSinceEpoch(2000),
+        ),
+      ],
+      passphrase: 'SNote-dart-single-test',
     );
 
     final imported = await service.importNotes(
-      packageText: await file.readAsString(),
-      passphrase: 'SNote-dart-single-20260613-141851',
+      packageText: package,
+      passphrase: 'SNote-dart-single-test',
     );
 
     expect(imported, hasLength(1));
-    expect(imported.first.title, '单条迁移测试');
+    expect(imported.first.title, 'Single migration test');
   });
 }
